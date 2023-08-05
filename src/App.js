@@ -1,63 +1,73 @@
-import { useRef, useState} from "react";
+import {useState } from "react";
 import "./App.css";
 
 function App() {
-
-  const inputRef = useRef(null);
-
+  const [inputData, setInputData] = useState(0);
   const [result, setResult] = useState(0);
 
   function operation(operator) {
-
-    const input = JSON.parse(inputRef.current.value);
-
     switch (operator) {
-
       case "+":
-        setResult(result + input);
+        setResult(result + inputData);
         break;
-
       case "-":
-        setResult(result - input);
+        setResult(result - inputData);
         break;
-
       case "*":
-        setResult(result * input);
+        setResult(result * inputData);
         break;
-
       case "/":
-        setResult(result / input);
+        //in .js 0/0 = NaN, to fix this i used ternary operator
+        setResult(isNaN(result / inputData) ? 0 : result / inputData);
         break;
-
       case "reset input":
-        inputRef.current.value = 0;
+        setInputData(0);
         break;
-
       case "reset result":
         setResult(0);
         break;
-
       default:
         break;
     }
   }
 
+  const actions = [
+    ["+", "ADD"],
+    ["-", "SUBTRACT"],
+    ["*", "MULTIPLY"],
+    ["/", "DIVIDE"],
+    ["reset input", "RESET INPUT"],
+    ["reset result", "RESET RESULT"],
+  ];
+
   return (
     <form>
       <h1>{result}</h1>
-      <input type="text" ref={inputRef} />
-      <Button operator={"+"}>ADD</Button>
-      <Button operator={"-"}>SUBTRACT</Button>
-      <Button operator={"*"}>MULTIPLY</Button>
-      <Button operator={"/"}>DIVIDE</Button>
-      <Button operator={"reset input"}>RESET INPUT</Button>
-      <Button operator={"reset result"}>RESET RESULT</Button>
+      <input
+        type="number"
+        value={inputData}
+        onChange={(e) => setInputData(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            setResult(e.target.value);
+            e.preventDefault();
+          }
+        }}
+      />
+      {actions.map((action, index) => (
+        <button
+          type="button"
+          key={index}
+          onClick={(e) => {
+            operation(action[0]);
+            setInputData(0);
+          }}
+        >
+          {action[1]}
+        </button>
+      ))}
     </form>
   );
-}
-
-function Button({operator,children}) {
-  return <button onClick={() => operate(operator)}>{children}</button>;
 }
 
 export default App;
