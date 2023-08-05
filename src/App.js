@@ -1,12 +1,20 @@
-import { useRef, useState } from "react";
+import { useRef, useState, createContext, useContext} from "react";
 import "./App.css";
 
 function App() {
+
   const inputRef = useRef(null);
+
   const [result, setResult] = useState(0);
+
+  const AppContext = createContext()
+
   function operation(operator) {
-    const input = inputRef.current.value;
+
+    const input = JSON.parse(inputRef.current.value);
+
     switch (operator) {
+
       case "+":
         setResult(result + input);
         break;
@@ -35,7 +43,9 @@ function App() {
         break;
     }
   }
+
   return (
+    <AppContext.Provider value={operation}>
     <form>
       <h1>{result}</h1>
       <input type="text" ref={inputRef} />
@@ -46,11 +56,13 @@ function App() {
       <Button operator={"reset input"}>RESET INPUT</Button>
       <Button operator={"reset result"}>RESET RESULT</Button>
     </form>
+  </AppContext.Provider>
   );
+}
 
-  function Button({operator,children}) {
-    return <button onClick={() => operation(operator)}>{children}</button>;
-  }
+function Button({operator,children}) {
+  const operate = useContext(AppContext)
+  return <button onClick={() => operate(operator)}>{children}</button>;
 }
 
 export default App;
