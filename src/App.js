@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
@@ -46,26 +46,29 @@ function App() {
       <input
         type="number"
         value={inputData}
-        onChange={(e) => setInputData(e.target.value)}
+        onChange={(e) => setInputData(parseInt(e.target.value))}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            setResult(e.target.value);
             e.preventDefault();
+            setResult(parseInt(e.target.value));
+            setInputData(0);
           }
         }}
       />
-      {actions.map((action, index) => (
-        <button
-          type="button"
-          key={index}
-          onClick={(e) => {
-            operation(action[0]);
-            setInputData(0);
-          }}
-        >
-          {action[1]}
-        </button>
-      ))}
+      <section>
+        {actions.map((action, index) => (
+          <button
+            type="button"
+            key={index}
+            onClick={(e) => {
+              operation(action[0]);
+              setInputData(0);
+            }}
+          >
+            {action[1]}
+          </button>
+        ))}
+      </section>
     </form>
   );
 }
